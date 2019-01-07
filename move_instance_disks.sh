@@ -41,8 +41,8 @@ echo "$instance_list"
 echo ""
 
 source stackrc
-serverip=$(openstack server show overcloud-compute-0 | grep addresses | awk -F '[ \t]+|=' '{print $(NF-1)}')
-echo "Connecting to server $hypervisor with IP $serverip"
+serverip=$(openstack server show $stackrc_hypervisor_name | grep addresses | awk -F '[ \t]+|=' '{print $(NF-1)}')
+echo "Connecting to server $stackrc_hypervisor_name with IP $serverip"
 echo ""
 
 instances_on_disk=$(ssh heat-admin@${serverip} "sudo ls /var/lib/nova/instances | egrep '[a-f0-9]+-[a-f0-9]+-[a-f0-9]+-[a-f0-9]+-[a-f0-9]+'" | tr '\n' ' ')
