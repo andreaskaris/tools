@@ -38,8 +38,8 @@ if `virsh list | grep -q $DOMAIN`;then
 fi
 
 
-echo "Pin $DOMAIN emulatorpin 0 $LIVE"
-virsh emulatorpin $DOMAIN 0 $LIVE
+echo "Pin $DOMAIN emulatorpin 0 --config $LIVE"
+virsh emulatorpin $DOMAIN 0 --config $LIVE
 
 echo "Pin $DOMAIN vcpus $LIVE"
 VCPU=0
