@@ -55,8 +55,16 @@ queue_name = sys.argv[1]
 max_messages = int(sys.argv[2])
 
 def callback(body, message):
-    oslo_message = json.loads(body['oslo.message'])
-    event_type = oslo_message['event_type']
+    try:
+        oslo_message = json.loads(body['oslo.message'])
+    except:
+        oslo_message = {}
+        
+    try:    
+        event_type = oslo_message['event_type']
+    except:
+        event_type = ''
+        
     try:
         stats[event_type] = stats[event_type] + 1
     except:
