@@ -57,25 +57,21 @@ max_messages = int(sys.argv[2])
 def callback(body, message):
     try:
         oslo_message = json.loads(body['oslo.message'])
-    except:
-        oslo_message = {}
-        
-    try:    
         event_type = oslo_message['event_type']
-    except:
-        event_type = ''
-        
-    try:
-        stats[event_type] = stats[event_type] + 1
-    except:
-        stats[event_type] = 1
+        try:
+             stats[event_type] = stats[event_type] + 1
+        except:
+             stats[event_type] = 1
 
-    print '\n===== event_type: %s =====\n' % event_type
-    print(json.dumps(message.delivery_info, indent = 4))
-    print(json.dumps(oslo_message, indent=4))
+        print '\n===== event_type: %s =====\n' % event_type
+        print(json.dumps(message.delivery_info, indent = 4))
+        print(json.dumps(oslo_message, indent=4))
 
-    if consume_message:
-      message.ack()
+        if consume_message:
+          message.ack()
+    except:
+        print '\n===== event_type: SKIPPED =====\n'
+        print 'Message skipped due to exception\n'
 
 with Connection('amqp://{0}:{1}@{2}//'.format(AMQP_USER, AMQP_PASSWORD, AMQP_HOST)) as conn:
     with conn.Consumer(
