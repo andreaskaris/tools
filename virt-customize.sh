@@ -5,6 +5,8 @@
 # libvirt lab environment.
 # For that it  expands the image's disk to the desired size, allows root password login,
 # sets the root password to "password" and removes cloud-init.
+# In order to find the root disk, a very imperfect heuristic is used that I update regularly whenever
+# it fails.
 
 BASE=$1
 CLONE=$2
@@ -24,11 +26,16 @@ if $(virt-filesystems -a $BASE --all --long -h | grep -q 'btrfs'); then
   RFS=$(virt-filesystems -a $BASE --all --long -h | grep 'btrfs' | awk '{print $1}' | head -1)
   virt-resize $BASE $CLONE --expand $RFS
   virt-customize -a $CLONE --run-command 'btrfs filesystem resize max /'
-else
-  RFS=$(virt-filesystems -a $BASE --all --long -h | egrep 'ext|xfs' | awk '{print $1}')
+elif $(virt-filesystems -a $BASE --all --long -h | grep -q 'xfs'); then
+  RFS=$(virt-filesystems -a $BASE --all --long -h | egrep 'xfs' | awk '/root/ {print $1}')
+  if [ -z "$RFS" ]; then
+    RFS=$(virt-filesystems -a $BASE --all --long -h | egrep 'xfs' | awk '{print $1}' | tail -1)
+  fi
   virt-resize $BASE $CLONE --expand $RFS
-
   virt-customize -a $CLONE --run-command 'xfs_growfs /'
+else
+  RFS=$(virt-filesystems -a $BASE --all --long -h | egrep 'xfs' | awk '{print $1}')
+  virt-resize $BASE $CLONE --expand $RFS
   virt-customize -a $CLONE --run-command 'echo -e "d\nn\n\n\n\n\nw\n" | fdisk /dev/sda'
   virt-customize -a $CLONE --run-command 'resize2fs /dev/sda1'
 fi
