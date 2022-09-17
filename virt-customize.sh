@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -eux
 # Author: Andreas Karis <ak.karis@gmail.com>
 # Usage: ./virt-customize.sh fedora.qcow2 fedora-clone.qcow2 30
 # This script takes a base cloud image and prepares it for use in a private
@@ -8,9 +8,17 @@
 # In order to find the root disk, a very imperfect heuristic is used that I update regularly whenever
 # it fails.
 
-BASE=$1
-CLONE=$2
-SIZE=$3
+BASE="${1-}"
+CLONE="${2-}"
+SIZE="${3-}"
+
+if [ -z "$BASE" ] ||
+   [ -z "$CLONE" ] ||
+   [ -z "$SIZE" ]; then
+  echo "Usage: ./virt-customize.sh \$BASE \$CLONE \$SIZE"
+  exit 1
+fi
+
 BASE_RESIZED=${BASE}-resized
 
 if ! [ -f $BASE ]; then
