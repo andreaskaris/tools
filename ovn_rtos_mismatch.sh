@@ -2,7 +2,7 @@
 # Author: Andreas Karis <akaris@redhat.com>
 # This script retrieves all k8s.ovn.org/node-subnets and all OVN rtos_networks. It then compares
 # the 2 sets and reports differences.
-# Tested for IPv4 single stack clusters only with OCP 4.8.35
+# Tested for IPv4 single stack clusters only with OCP 4.8.35 and 4.12
 
 # check_prerequisites makes sure that all required commands are found
 # and that python points to python 3
