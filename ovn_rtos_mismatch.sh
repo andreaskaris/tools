@@ -100,6 +100,6 @@ mismatch=$(echo -e "${node_subnets}\n${rtos_networks}" | sort | uniq -c | awk '$
 if [ "${mismatch}" != "" ]; then
     echo "The following subnets were found either in node subnets or in rtos networks, but not in the other:"
     echo "${mismatch}"
-    exit 1
+    exit 2
 fi
 exit 0
