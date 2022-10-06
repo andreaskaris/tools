@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 # Author: Andreas Karis <akaris@redhat.com>
-# This script retrieves all k8s.ovn.org/node-subnets and all OVN rtos_networks. If then compares
+# This script retrieves all k8s.ovn.org/node-subnets and all OVN rtos_networks. It then compares
 # the 2 sets and reports differences.
 # Tested for IPv4 single stack clusters only with OCP 4.8.35
 
