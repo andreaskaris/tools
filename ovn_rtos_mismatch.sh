@@ -7,14 +7,14 @@
 # check_prerequisites makes sure that all required commands are found
 # and that python points to python 3
 check_prerequisites() {
-    for c in jq python oc; do
+    for c in jq python oc sort uniq awk grep; do
         if ! command -v "${c}" &> /dev/null; then    
-            echo "${c} could not be found"
+            echo "Prerequisite: Command ${c} could not be found"
             exit 1
         fi
     done
     if ! python --version | grep -q "Python 3"; then
-        echo "python must point to Python 3"
+        echo "Prerequisite: Python must point to Python 3"
         exit 1
     fi
 }
@@ -72,7 +72,6 @@ for line in sys.stdin:
     print(net)
 '
 }
-
 
 check_prerequisites
 
