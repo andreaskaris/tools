@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash
 # Author: Andreas Karis <ak.karis@gmail.com>
 # Usage: ./virt-customize.sh fedora.qcow2 fedora-clone.qcow2 30
 # This script takes a base cloud image and prepares it for use in a private
@@ -8,8 +8,13 @@
 # In order to find the root disk, a very imperfect heuristic is used that I update regularly whenever
 # it fails.
 
+set -eu
+
 show_help() {
     echo "Usage: ./virt-customize.sh \$BASE \$CLONE \$SIZE"
+    echo "  BASE:  Your base image"
+    echo "  CLONE: Your clones target image, i.e. the image for your VM"
+    echo "  SIZE:  If provided as an integer will be interpreted as GB"
     exit 1
 }
 
@@ -27,8 +32,14 @@ if ! [ -f "${BASE}" ]; then
   exit 1
 fi
 
+if [[ "${SIZE}" =~ ^[0-9]+$ ]]; then
+    SIZE="${SIZE}G"
+fi
+
+set -x
+
 cp "${BASE}" "${CLONE}"
-qemu-img resize "${CLONE}" "${SIZE}G"
+qemu-img resize "${CLONE}" "${SIZE}"
 
 
 if virt-filesystems -a "${BASE}" --all --long -h | grep -q 'btrfs'; then
